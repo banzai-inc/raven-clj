@@ -8,9 +8,10 @@
                            (http req http-alter-fn)
                            (stacktrace error app-namespaces)))))
 
-(defn- format-error [dsn req e {:keys [extra namespaces http-alter-fn]
+(defn- format-error [dsn req e {:keys [extra namespaces http-alter-fn test?]
                                 :or {http-alter-fn identity}}]
-  (capture-error dsn req e extra namespaces http-alter-fn)
+  (when (not test?)
+    (capture-error dsn req e extra namespaces http-alter-fn))
   (throw e))
 
 (defn wrap-sentry [handler dsn & [opts]]
